@@ -157,11 +157,12 @@ async function loadFac(no){
   D={fac,profiles,items,records,templates:templates.filter(t=>t.scope==='global'||t.scope===no),sends};
 }
 async function loadSuper(){
-  const [facs,profiles]=await Promise.all([
+  const [facs,profiles,ips]=await Promise.all([
     q(sb.from('facilities').select('*').neq('no',SUPER_FAC).order('created_at')),
-    q(sb.from('profiles').select('fac,role,active'))
+    q(sb.from('profiles').select('fac,user_id,role,active')),
+    q(sb.from('initial_passwords').select('*'))
   ]);
-  D={facs,profiles};
+  D={facs,profiles,ips};
 }
 async function refresh(){
   try{
@@ -362,6 +363,15 @@ function sendTab(f){
     ${S.lastPayload?`<div class="card"><h2>送信したデータ</h2><pre>${esc(JSON.stringify(S.lastPayload,null,2))}</pre><p class="note">体重管理アプリとの接続は、連携先が決まりしだい設定します。今は送信記録をデータベースに保存しています。</p></div>`:''}
     <div class="card"><h2>${S.sendFy}年度の送信状況</h2>${users.map(u=>{const s=sendStatus(u.user_id,S.sendFy);return `<div class="row"><span>ID ${esc(u.user_id)}</span><span class="pill ${s.cls}">${s.label}</span></div>`}).join('')}</div>`;
 }
+function adminLoginBox(no){
+  const admins=(D.profiles||[]).filter(p=>p.fac===no&&p.role==='admin');
+  if(!admins.length)return '';
+  return `<div class="box" style="display:flex;flex-direction:column;gap:4px">
+    <span style="font-weight:700;color:var(--fg)">機関管理者のログイン</span>
+    ${admins.map(a=>{const ip=(D.ips||[]).find(x=>x.fac===no&&x.user_id===a.user_id);
+      return `<span>管理番号 <b>${no}</b> ／ ID <b>${esc(a.user_id)}</b><br>${ip?`初期パスワード <b>${esc(ip.pw)}</b>（まだ変更されていません）`:'パスワードは管理者が変更済みです'}</span>`}).join('')}
+  </div>`;
+}
 function superView(){
   const facs=D.facs||[], cnt=no=>(D.profiles||[]).filter(p=>p.fac===no&&p.role==='user'&&p.active).length;
   const total=facs.reduce((a,f)=>a+cnt(f.no),0);
@@ -371,6 +381,7 @@ function superView(){
   ${facs.map(f=>{const u=cnt(f.no),opts=[...new Set(LIMITS.concat(f.account_limit))].sort((a,b)=>a-b);return `<div class="card">
     <div class="itemhead"><h2>${esc(f.name)}</h2><span class="eyebrow">${f.no}</span></div>
     <div class="inline"><div class="bar" style="flex:1"><i class="${u>=f.account_limit?'full':''}" style="width:${f.account_limit?Math.min(100,Math.round(u/f.account_limit*100)):100}%"></i></div><span style="font-variant-numeric:tabular-nums;font-weight:500">${u} ／ ${f.account_limit}</span></div>
+    ${adminLoginBox(f.no)}
     <div class="inline"><label class="lbl" for="lim_${f.no}">上限</label><select id="lim_${f.no}" data-act="limit" data-no="${f.no}" style="width:auto">${opts.map(n=>`<option ${n===f.account_limit?'selected':''}>${n}</option>`).join('')}</select><button class="btn" data-act="openFac" data-no="${f.no}" style="margin-left:auto">管理画面へ</button></div>
   </div>`}).join('')}
   <form class="card" id="facForm" novalidate>
@@ -381,7 +392,7 @@ function superView(){
     <p class="note">登録すると、機関管理者のアカウント（ID：kanri）が作られ、初期パスワードが表示されます。</p>
     ${S.err?`<p class="err">${esc(S.err)}</p>`:''}
     <button class="primary" type="submit" ${S.busy?'disabled':''}>${S.busy?'登録中…':'登録する'}</button>
-    ${S.lastIssued?`<div class="box">登録しました<br>管理番号 <b>${esc(S.lastIssued.fac)}</b><br>ID <b>kanri</b><br>初期パスワード <b>${esc(S.lastIssued.pw)}</b><br>この画面を離れると再表示できません。機関の管理者に伝えてください。</div>`:''}
+    ${S.lastIssued?`<div class="box">登録しました<br>管理番号 <b>${esc(S.lastIssued.fac)}</b><br>ID <b>kanri</b><br>初期パスワード <b>${esc(S.lastIssued.pw)}</b><br>機関の管理者に伝えてください。管理者がパスワードを変更するまでは、上の機関一覧でいつでも確認できます。</div>`:''}
   </form>`;
 }
 
@@ -417,7 +428,11 @@ document.addEventListener('submit',e=>{
     const a=$('#pw1').value,b=$('#pw2').value;
     if(a.length<8){S.err='パスワードは8文字以上にしてください。';return render()}
     if(a!==b){S.err='2回の入力が一致しません。';return render()}
-    return act(async()=>{await q(sb.auth.updateUser({password:a}));S.view='main';toast('パスワードを変更しました')});
+    return act(async()=>{
+      await q(sb.auth.updateUser({password:a}));
+      try{await sb.rpc('clear_my_initial_password')}catch(_){}
+      S.view='main';toast('パスワードを変更しました');
+    });
   }
   if(id==='recForm'){
     const date=$('#rDate').value, w=parseFloat($('#rW').value), wa=parseFloat($('#rWa').value);
@@ -470,6 +485,7 @@ document.addEventListener('submit',e=>{
       const email=await q(sb.rpc('create_facility',{p_no:no,p_name:name,p_limit:limit}));
       const pw=randPw();
       await createLogin(email,pw);
+      await q(sb.from('initial_passwords').insert({fac:no,user_id:'kanri',pw}));
       S.lastIssued={fac:no,pw};toast('機関を登録しました');
     });
   }
