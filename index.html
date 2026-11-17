@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>体重・腹囲ノート</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="体重ノート">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F3F5F4">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAANg0lEQVR42u2da3BU5RnH3+d5z56zF3IDuVgvICEJIAgEQQWjqB1Ea4ep2lqcjk5noNN+sfaivUz7wZna64xaZ6rVOtOprbYjiqJUtJgBpSp3iIYgBqpcBBIukmw2u3v2nPfth6Mxkt3NJpwF9+z/P/uByWSAffe3z/9/3svzUtVdSwUEZRNjCCDAAQEOCHBAgAMCHBDggAAHBDggwAEBDggCHBDggAAHBDggwAEBDghwQIADAhwQ4IAgwAEBDghwQIADAhwQ4IAABwQ4IMABAQ4IAhwQ4IAABwQ4IMABAQ4IcECAAwIcEOCAAAcEAQ4IcECAAwIc0FmRUQ5vkoiYSAihtNZa41MHHEIIQUJI5rTjJDO21sIyjIhpAhHAIYhIKXWyJ35ezaimusmSec/RjvcOfxQ1TcswlVb4+MsUDiJylUuC71v89aVXLvhSdY0QIp5OvbB9y30vPnfw5MdRy1IKfOQdw0Be40VESiuhxMt33zu/tt5LG0IIL3kc6e5a+OBv2juPREIW6kfZPa1Iou7e3p9/ZfH82nrbcbTWTMREWgjbccZVVj285E474wiB5JF3GMOXNQaNd+KEnWocP/GJO5YJIQxmIuqfTx3lTjxnjO06zW3vRi0L4bSMKgcTpW37znlNISm10H1k9HvPJIRY1nRtRTjqKhcQlAscRJR2M+OqR97SOFcIISnLG2RmpfWFI0fNvag2kbYlYyawPOCQxIlk6qZLZo2rrHK1Glg2PCmtmOimGbMcxyFB4KAs4FBahaS8Y16TEPnipucsN0ybWRWLZZQDDoIPBzMn7PTsCROvmFintc7jF56zTBo9Zu6E2l44S1nAIci2M7dfNt9gdgebwFBaEZylTOD4NIrW3Do7ZxTN7ixROEvQ4Sgwig50lssnToKzBByOAqPoQGdZMHmq42TgLIGFo/Ao+vkFfRJCXDN5ati0XI3ZsKDCMZQo+pkTMWshGi+YMO28C5J2hhnFI3BwDDWK9per3JCUN0yfkbZtxqbJ4MEx1Cg60Fm+OqMxbJoulu+DB8cwougpzjLj/PHTzrsgadtwlkDBMbwoeoqzmHCWYMJRWBTVcJZyg6PwKEpwlnKDo8Ao6ir1+1dXZVwXzlJGcAwaRb395bs7Dv961YoPjx/t+wmcJeBwFBJFldBCiGe2bOg6fmxNW2vfT+AsQYdjsCiqtZYse9LpZ7Zs5NiIlTu2aK05Ry6BswQHjkKiqKsVCfHKzpbdhw9VjajY+MHePUc7mQjOEnA4ComiXpF48q31RBRi2ZVIrG7dAWcJPhyFRFEm2nXk0LrdbSPCYUe5hmGsatkOZwk4HIVH0ac2vBlPJg2WrlJRy9z0YeHOghX8EoWj4Cj67NaNkbDl/U6IjQKdZfr5F/ZiBb8U4RhSFG3vOBwJmd6BRy10gc5y3ZSLbThLKcIxxCjK/edJC3SWq+snSyl12T+zcOCjqNsPghAbXYmePM7i9Wi4clJD7eixSSczpK0hgKP0oujn12a1YYReatnmapXVWYjIVWqEFb5u6rRk2h7SpjLAUZJRtF/V0REz9M7BA53xbibK03xh8cxGyVzm3Rm4HKJof3RC0jga71r7Xpv3y7mcZV5tfe3osUnHLmdn4XKIogNT58odW/s4yOosFXCWIjWMY2bvsKH2ta8SkTAN47MoStmiKHPWKNrfWaJha3377o5419iKKq11rtqweGbj4683n46z9PU/LWYvzU/GuRj9Mw3fsVBKxZNJx3GE0MTSr7LMTE4qNWdSQ/4oyp9G0VEVlU62rj1aa1MaR06eaN618/a581ytDJJ5nOXAyeOWERrquJ/S/7Ro0spVQmiSMmZapmG4vvZH9BMOydyTSpkh45qGqU31DQbLnYcOnkgkDMmnX0Ekc1dvYulV13pRVA6oG/mj6IDvNK/csfX2ufMGdZZH166JhixnKLPpA/uf5t+nOEwuhDZYNo6/KMTc8tH+te+1dca7a6IxH/kwfCSjq7d3zoSJD33zjssuqi12+MgaRQ2SXhStjo3IM0ZFdRYmcpQiQf37n54B7T9x/Jcrl//97fU1ed/7WYCDiXtSqUvHX7T67p9UR6JKa6W1EJoE+Zr28/2FhUTRYjsLETlKaaVW/+Cn/fufFtFWtPaSx4UjR/3t29+NhMzH32j2iw/2a9bSlPKxO5ZWR6IZ12Uig9lgKZm9BqA+vThnj6/cs6L5ncXfZxYmSqbT99982/zaetv9rP9p0V5ssPTG2VVKaf3Abd+aeu75vbbtSxBmXwwlkU7Pr2uYcf6FrlYhKc/8Q1eeWdFBnYWJfZkN84x10fSZd117vaOUKY0zOUcimZVW0ZD5jTmXp9Jp9uMJnH15mnKcTFPdZC3EWZlSHFIUHegsfs2GeXXi3kU3aa3p7FwRQVrrpvoGwzB8advt2wyPaZy1Hvv5Z0XPjLNI5u5kctG0GU2TGrQQZ6tPEBGZ0vgCzZBqoZnljv37SIizMtlMRLqwKFo8Z/HKxj2LbhJnqXz2TTm2HNjvus4XxVa8UW7e1doR72LB7pm9p8JxXUnc3nmk8Cjqu7P0LxtqWIe5ffFW7w/Lt2yU0vBlbpp9+W+Z0jjW033P8qeJhGR2XNdVqtgvRylXKUNKIcQ9y59OZobT9K1QZ5lycSq3sxRYNpTWxRsKpbXB8pF1r73RvqsyEvHlK+qPP7lKVUVj/9jw35hp/e6WJZWRyBn7xuw6fOhnK/61urWlIjzkESlkNsz7Cl5Z1/DndWt0jp2nXb2JG6fPGrRsMJEopu3+ae2aHy9/ahjjUPQZUlepmtiIx95oXr9n99dmXbqgYWqIZRE79Gmx89DBde/vWtPW2pVMVEViw8jnXs07nHc2zKsW102+eFz1yHg6abAcuA1Asrzn+k/LRraP38Nu34ljezs7TGkoH9cjtRBCtBzcv2Lbpjfa36sIR0iQX+udfj5ieHzsPdr5q1XP/3b1S4KKedkNCcdxiagiHK4+vQUFZn5h+9Ylc67I5SxKq7GVVU11Dc9u2Vgdi7n94GDmRDo184LxV9TmXA70Vkttx7nlkYe2frDHtMI+Xx9GwnFcQ0pvHHxcCff5+dNVKhIKxUxTaVHse5A4TFoIpdTpkKG0jpjmxg/2dKWS1ZFoVmdRWjOJxTNnL9/89sDIZmcy3//yIoPZVUpmw8vzmhXbN2/d97/RVTVOEW548YbC90cBowgbgLU6I89yvvwrnzrLx5s+2Ltw6nSl9cAP+BNnmXKqszBxTzp16YTaWxvnKq05t6HYjvPAf162QiFHq2IMTpEGHIf+BBNnXOeF7VvyXyc4tqKqqa6hN5Xug4BJpDOZHy680TSMXEu7HjTPbtu05cO9I3w3FGwTFMWfYI1YVvOunfF0Ktdkl/fVXDxzdt9hlr6ycfOsObnKRt8K/h9fe8UMhRT2kJactNYRw9x7tOOtve/nKtH9ncV2HSLqKxtW7rLhKkVEb+9t33FgX8wsvWtsAcdnk10rd2wr0FkMlvF0avZgZcMj5g+vrnKVW4q72AFHn7OYzW2tBToLk3Ac90eDlQ0mWr9n9yutLZWRqFuCt18DjiE7y7k1o7qTydoxYxfPaNRisLLxyiqVexsi4AiasyxomJzqPrms6ZqoaSlVSNmIlGLZABzDcZaFUy6pGXnOd666NthlA3AMx1muqK27/5YlVZGo1iLAZQNwDNlZhBD1Y8d97+rrdI5V/r7NR6VeNgDHkJ2lbx0/12eulCKi9zsOD3XzEeAoeWfpf0I11xI6CfFw86vxVKqQffCAIzjOkl/eSe72ziNPbXizMhpxSrwlIeAYprPkKRsPvra6K5kIsVHkPQuA44vqLHnKxj83vFUZjTml38kUcGQ/I79y+9ZhbNjzysbJZCLEstTLBuDI7ixhy1y7u603YxfuLEopydzeeeTpoJQNwJHdWSzD2Hf8WNuhg4U7i/dLD6zx0kYQygbgEDn6f8hkOvViy7YCO1dprZm5M979/LbNFZFIYG7kABxZz+wry7RWv9tiu64s7Mw+CfHXN1/v6D5pylBgGlQCjqwBQkdMs/WjAy0H99Fgu7q9427HEz2PrnstaoWDdJEP4MjZWSpl2y8V4CzeAsoT69fuO9Y5pDP+gKOkncUc1Fn6l41YgNIG4BjUWUKDOkv/shE2zIC1wwYc+Z5ZUra9qmV7LmcJdtkAHIN0wbNMc1XLNttxsnZ38VpsB7VsAI5BHlBjlrVt/4fPbd/MRKfcdu4oJYk7492PrF0TyLIBOApo4GFZv3j+maM9cdMwlFKOch3lukoZzES07MknDp48MYz+16VhrOHLGgFBHoWk8XGi59/v7KgdM3bSmHFMzMRMtOvwoWVP/mV1a0tlJKpUMC/8oqq7loKAQU9a99ppLfTVdVOa6id7vcZfbX2nK9k7vKYxgCNgfJAQIp5KfXIbhJQVVtiQ0lUK960gfGghREUk0nePzGk2jQEcwZsZUwrXeEEQ4IAABwQ4IMABAQ4IcECAAwIcEOCAAAcEOCAIcECAAwIcEOCAAAcEOCDAAQEOCHBAgAOCAAcEOCDAAQEOCHBAgAMCHBDggAAHBDggCHBAgAMCHBDggAAHBDggwAEBDghwQIADAhwQlFX/B2I3ilVj+fEuAAAAAElFTkSuQmCC">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#F3F5F4; --surface:#FFFFFF; --sub:#EBEFED; --line:#DCE1DF;
+  --fg:#1B2421; --muted:#55605C; --accent:#0F6E64; --accent-ink:#FFFFFF; --accent-soft:#DDEFEB; --accent-text:#0A5048;
+  --warn:#9A4415; --warn-soft:#FAEADF; --ok:#2C6B2F; --ok-soft:#E3F1DF;
+  --font:'Noto Sans JP','Hiragino Sans','Yu Gothic',system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#121816; --surface:#1A2220; --sub:#232D2A; --line:#33403C;
+  --fg:#E7EEEB; --muted:#A3B0AB; --accent:#3FB3A2; --accent-ink:#0B1A17; --accent-soft:#183A35; --accent-text:#8ED9CC;
+  --warn:#F0A877; --warn-soft:#3A2618; --ok:#9AD39C; --ok-soft:#1F3320; color-scheme:dark}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.6;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.wrap{max-width:560px;margin:0 auto;padding-block:16px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
+h1{font-size:22px;margin:0;font-weight:700}
+h2{font-size:16px;margin:0;font-weight:700}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.eyebrow{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field>span,.lbl{font-size:13px;font-weight:500;color:var(--muted)}
+input,select,textarea{font:inherit;font-size:16px;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:0 12px;height:46px;width:100%;min-width:0}
+textarea{height:auto;min-height:80px;padding:10px 12px}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button{font:inherit;cursor:pointer}
+button:disabled{opacity:.5;cursor:default}
+.btn{height:46px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--fg);font-size:14px;font-weight:500;padding:0 14px}
+.btn.small{height:38px;font-size:13px;padding:0 10px}
+.primary{width:100%;height:54px;border:none;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-size:16px;font-weight:700}
+.huge{height:76px;font-size:20px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:10px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stepper{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;height:50px}
+.stepper button{width:44px;border:none;background:var(--sub);color:var(--fg);font-size:20px}
+.stepper input{border:none;border-radius:0;height:48px;text-align:center;font-size:20px;font-weight:700;padding:0 4px;font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;width:1px;height:1px}
+.chip span{display:flex;align-items:center;justify-content:center;min-width:64px;height:44px;padding:0 14px;border:1px solid var(--line);border-radius:10px;font-size:15px}
+.chip input:checked+span{border:2px solid var(--accent);background:var(--accent-soft);color:var(--accent-text);font-weight:700}
+.chip input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;background:var(--sub);padding:4px;border-radius:12px}
+.tabs button{height:40px;border:none;border-radius:9px;background:transparent;color:var(--muted);font-size:14px;font-weight:500}
+.tabs button[aria-pressed="true"]{background:var(--surface);color:var(--fg);font-weight:700}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;min-width:0}
+.row:last-child{border-bottom:none}
+.row .k{color:var(--muted)}
+.row .v{font-weight:500;text-align:right;overflow-wrap:anywhere}
+.pill{font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.p-ok{background:var(--ok-soft);color:var(--ok)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-off{background:var(--sub);color:var(--muted)}
+.bar{height:10px;border-radius:999px;background:var(--sub);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+.bar i.full{background:var(--warn)}
+.big{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.note{font-size:13px;color:var(--muted);margin:0}
+.err{font-size:13px;color:var(--warn);margin:0;font-weight:500}
+.box{background:var(--sub);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--muted)}
+.box b{color:var(--fg);font-size:16px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;font-weight:500;z-index:20;max-width:90vw}
+pre{background:var(--sub);border-radius:10px;padding:12px;font-size:12px;overflow-x:auto;margin:0}
+.confirm{border:2px solid var(--accent)}
+.inline{display:flex;gap:8px;align-items:center}
+.inline>input{flex:1}
+.check{display:flex;justify-content:space-between;align-items:center;font-size:14px;min-height:40px}
+.check input{width:22px;height:22px;accent-color:var(--accent)}
+.itemhead{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.mini{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.loading{display:flex;justify-content:center;padding:40px 0;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><div class="loading">読み込み中…</div></div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+<script>
+const SUPABASE_URL='https://jqoylgheijooyrxbmphi.supabase.co';
+const SUPABASE_KEY='sb_publishable_VHovQc-7Qy8-LzFnWimfLQ_qMahk4KG';
+const SUPER_FAC='0000000000';
+const TYPES={select:'プルダウン（1つ選ぶ）',combo:'コンボボックス（選ぶ＋自由入力）',buttons:'ボタン選択',check:'チェックボックス（複数）',number:'数値',date:'日付',text:'自由記述'};
+const CHOICE=['select','combo','buttons','check'];
+const LIMITS=[5,10,30,50,100,300];
+
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const emailFor=(fac,id)=>`${fac}-${String(id).toLowerCase()}@example.com`;
+
+let S={me:null,fac:null,view:'main',tab:'input',adminTab:'accounts',sendUid:'',sendFy:null,confirm:false,
+  lastIssued:null,lastPayload:null,err:'',tplId:'',tplConfirm:false,busy:false};
+let D={};
+
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const fyOf=date=>{const [y,m]=date.split('-').map(Number);return m>=4?y:y-1};
+const slash=d=>String(d).replace(/-/g,'/');
+function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2600)}
+function randPw(){const c='abcdefghjkmnpqrstuvwxyz23456789';let s='';const a=new Uint32Array(8);crypto.getRandomValues(a);for(const n of a)s+=c[n%c.length];return s}
+function jpErr(e){
+  const m=(e&&(e.message||e.error_description||e))+'';
+  if(/Invalid login credentials/i.test(m))return '管理番号・ID・パスワードのいずれかが違います。';
+  if(/already registered|already been registered/i.test(m))return 'このIDはすでに登録されています。';
+  if(/Password should be/i.test(m))return 'パスワードは6文字以上にしてください。';
+  if(/Failed to fetch|NetworkError|Load failed/i.test(m))return '通信できませんでした。電波の状態を確認して、もう一度お試しください。';
+  if(/duplicate key/i.test(m))return 'すでに登録されています。';
+  if(/row-level security/i.test(m))return 'この操作の権限がありません。';
+  return m.replace(/^.*?:\s*/,'')||'エラーが発生しました。';
+}
+async function q(p){const {data,error}=await p;if(error)throw error;return data}
+
+// ---------- データ読み込み ----------
+async function loadMe(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){S.me=null;return}
+  const email=session.user.email.toLowerCase();
+  const rows=await q(sb.from('profiles').select('*').eq('login_email',email));
+  const p=rows[0];
+  if(!p||!p.active){await sb.auth.signOut();S.me=null;S.err=p?'このIDは停止されています。施設の管理者にお問い合わせください。':'このアカウントは登録されていません。';return}
+  S.me=p;
+  if(p.role==='admin')S.fac=p.fac;
+}
+async function loadUser(){
+  const me=S.me;
+  const [items,records]=await Promise.all([
+    q(sb.from('items').select('*').eq('fac',me.fac).eq('hidden',false).order('sort').order('created_at')),
+    q(sb.from('records').select('*').eq('fac',me.fac).eq('user_id',me.user_id).order('measured_on',{ascending:false}))
+  ]);
+  D={items,records};
+}
+async function loadFac(no){
+  const [fac,profiles,items,records,templates,sends]=await Promise.all([
+    q(sb.from('facilities').select('*').eq('no',no).single()),
+    q(sb.from('profiles').select('*').eq('fac',no)),
+    q(sb.from('items').select('*').eq('fac',no).order('sort').order('created_at')),
+    q(sb.from('records').select('*').eq('fac',no).order('measured_on',{ascending:false})),
+    q(sb.from('templates').select('*').order('created_at')),
+    q(sb.from('sends').select('*').eq('fac',no))
+  ]);
+  profiles.sort((a,b)=>(+a.user_id||0)-(+b.user_id||0)||a.user_id.localeCompare(b.user_id));
+  D={fac,profiles,items,records,templates:templates.filter(t=>t.scope==='global'||t.scope===no),sends};
+}
+async function loadSuper(){
+  const [facs,profiles]=await Promise.all([
+    q(sb.from('facilities').select('*').neq('no',SUPER_FAC).order('created_at')),
+    q(sb.from('profiles').select('fac,role,active'))
+  ]);
+  D={facs,profiles};
+}
+async function refresh(){
+  try{
+    if(!S.me)return render();
+    if(S.view==='pw')return render();
+    if(S.me.role==='user')await loadUser();
+    else if(S.me.role==='super'&&!S.fac)await loadSuper();
+    else await loadFac(S.fac);
+  }catch(e){toast(jpErr(e))}
+  render();
+}
+async function act(fn){
+  if(S.busy)return;S.busy=true;
+  try{await fn()}catch(e){S.err=jpErr(e);toast(S.err)}
+  S.busy=false;await refresh();
+}
+
+// ---------- 画面 ----------
+function render(){
+  const app=$('#app');
+  if(!S.me){app.innerHTML=loginView();return}
+  if(S.view==='pw'){app.innerHTML=pwView();return}
+  if(S.me.role==='user')app.innerHTML=userView();
+  else if(S.me.role==='super'&&!S.fac)app.innerHTML=superView();
+  else app.innerHTML=adminView();
+}
+function header(sub,title,extra=''){
+  return `<div class="top"><div><div class="eyebrow">${sub}</div><h1>${title}</h1></div><div class="mini">${extra}<button class="btn small" data-act="pw">パスワード変更</button><button class="btn small" data-act="logout">ログアウト</button></div></div>`;
+}
+function loginView(){
+  return `<div class="top"><div><div class="eyebrow">健康管理</div><h1>体重・腹囲ノート</h1></div></div>
+  <form class="card" id="loginForm" novalidate>
+    <label class="field"><span>管理番号（10桁）</span><input id="lgFac" inputmode="numeric" autocomplete="username" maxlength="10"></label>
+    <label class="field"><span>個別ID</span><input id="lgId" autocomplete="off" autocapitalize="off"></label>
+    <label class="field"><span>パスワード</span><input id="lgPw" type="password" autocomplete="current-password"></label>
+    ${S.err?`<p class="err">${esc(S.err)}</p>`:''}
+    <button class="primary" type="submit" ${S.busy?'disabled':''}>${S.busy?'確認中…':'ログイン'}</button>
+  </form>
+  <p class="note">パスワードを忘れた場合は、施設の管理者にお問い合わせください。</p>`;
+}
+function pwView(){
+  return header(`${S.me.fac} ／ ID ${esc(S.me.user_id)}`,'パスワード変更')+
+  `<form class="card" id="pwForm" novalidate>
+    <label class="field"><span>新しいパスワード（8文字以上）</span><input id="pw1" type="password" autocomplete="new-password"></label>
+    <label class="field"><span>もう一度入力</span><input id="pw2" type="password" autocomplete="new-password"></label>
+    ${S.err?`<p class="err">${esc(S.err)}</p>`:''}
+    <button class="primary" type="submit">変更する</button>
+    <button class="btn" type="button" data-act="back">戻る</button>
+  </form>`;
+}
+function answerInput(it,val){
+  const n='q_'+it.id, req=it.required?'<span style="color:var(--warn)">　必須</span>':'';
+  const lbl=`${esc(it.name)}${req}`, opts=it.options||[];
+  if(it.type==='select')return `<label class="field"><span>${lbl}</span><select id="${n}" name="${n}"><option value="">選択してください</option>${opts.map(o=>`<option ${o===val?'selected':''}>${esc(o)}</option>`).join('')}</select></label>`;
+  if(it.type==='combo')return `<label class="field"><span>${lbl}</span><input id="${n}" name="${n}" list="dl_${it.id}" value="${esc(val||'')}" placeholder="選ぶか入力"><datalist id="dl_${it.id}">${opts.map(o=>`<option value="${esc(o)}"></option>`).join('')}</datalist></label>`;
+  if(it.type==='buttons'||it.type==='check'){
+    const t=it.type==='buttons'?'radio':'checkbox', vals=Array.isArray(val)?val:[val];
+    return `<fieldset class="field" style="border:none;margin:0;padding:0"><legend class="lbl" style="padding:0;margin-bottom:6px">${lbl}</legend><div class="chips">${opts.map((o,k)=>`<label class="chip"><input type="${t}" id="${n}_${k}" name="${n}" value="${esc(o)}" ${vals.includes(o)?'checked':''}><span>${esc(o)}</span></label>`).join('')}</div></fieldset>`;
+  }
+  if(it.type==='number')return `<label class="field"><span>${lbl}</span><input id="${n}" name="${n}" type="number" inputmode="decimal" value="${esc(val||'')}"></label>`;
+  if(it.type==='date')return `<label class="field"><span>${lbl}</span><input id="${n}" name="${n}" type="date" value="${esc(val||'')}"></label>`;
+  return `<label class="field"><span>${lbl}</span><textarea id="${n}" name="${n}">${esc(val||'')}</textarea></label>`;
+}
+function userView(){
+  const me=S.me, recs=D.records||[], last=recs[0], items=D.items||[];
+  const tabs=`<div class="tabs" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button data-act="tab" data-v="input" aria-pressed="${S.tab==='input'}">記録する</button><button data-act="tab" data-v="history" aria-pressed="${S.tab==='history'}">履歴</button></div>`;
+  let body='';
+  if(S.tab==='input'){
+    body=`<form class="card" id="recForm" novalidate>
+      <label class="field"><span>測定日</span><input id="rDate" type="date" value="${today()}"></label>
+      <div class="grid2">
+        <div class="field"><label class="lbl" for="rW">体重（kg）</label><div class="stepper"><button type="button" data-act="step" data-t="rW" data-d="-0.1" aria-label="体重を0.1減らす">−</button><input id="rW" inputmode="decimal" value="${last?last.weight:''}"><button type="button" data-act="step" data-t="rW" data-d="0.1" aria-label="体重を0.1増やす">＋</button></div>${last?`<span class="note">前回 ${last.weight}</span>`:''}</div>
+        <div class="field"><label class="lbl" for="rWa">腹囲（cm）</label><div class="stepper"><button type="button" data-act="step" data-t="rWa" data-d="-0.5" aria-label="腹囲を0.5減らす">−</button><input id="rWa" inputmode="decimal" value="${last?last.waist:''}"><button type="button" data-act="step" data-t="rWa" data-d="0.5" aria-label="腹囲を0.5増やす">＋</button></div>${last?`<span class="note">前回 ${last.waist}</span>`:''}</div>
+      </div>
+      ${items.length?'<h2>聞き取り</h2>':''}
+      ${items.map(it=>answerInput(it,'')).join('')}
+      ${S.err?`<p class="err">${esc(S.err)}</p>`:''}
+      <button class="primary" type="submit" ${S.busy?'disabled':''}>保存する</button>
+    </form>`;
+  }else{
+    body=`<div class="card">${recs.length?recs.map(r=>`<div class="row"><span class="k">${slash(r.measured_on)}<br><span class="eyebrow">${fyOf(r.measured_on)}年度</span></span><span class="v">${r.weight} kg ／ ${r.waist} cm</span></div>`).join(''):'<p class="note">まだ記録がありません。「記録する」から最初の記録を入れてください。</p>'}</div>`;
+  }
+  return header(`${me.fac} ／ ID ${esc(me.user_id)}`,'わたしの記録')+tabs+body;
+}
+function adminView(){
+  const f=D.fac;if(!f)return '<div class="loading">読み込み中…</div>';
+  const back=S.me.role==='super'?'<button class="btn small" data-act="backSuper">全機関へ</button>':'';
+  const tabs=`<div class="tabs"><button data-act="atab" data-v="accounts" aria-pressed="${S.adminTab==='accounts'}">ID管理</button><button data-act="atab" data-v="items" aria-pressed="${S.adminTab==='items'}">聞き取り項目</button><button data-act="atab" data-v="send" aria-pressed="${S.adminTab==='send'}">送信</button></div>`;
+  const body=S.adminTab==='accounts'?accountsTab(f):S.adminTab==='items'?itemsTab(f):sendTab(f);
+  return header(`${S.me.role==='super'?'統括管理者として表示':'機関管理者'} ／ ${f.no}`,esc(f.name),back)+tabs+body;
+}
+const usedCount=()=>D.profiles.filter(u=>u.role==='user'&&u.active).length;
+function accountsTab(f){
+  const used=usedCount(), pct=f.account_limit?Math.min(100,Math.round(used/f.account_limit*100)):100, users=D.profiles.filter(u=>u.role==='user');
+  const lastRec=uid=>D.records.find(r=>r.user_id===uid);
+  return `<div class="card">
+    <div class="row" style="border:none;padding:0"><span class="lbl">採番数 ／ 上限</span><span class="big">${used}<span style="font-size:15px;color:var(--muted)"> ／ ${f.account_limit}</span></span></div>
+    <div class="bar"><i class="${used>=f.account_limit?'full':''}" style="width:${pct}%"></i></div>
+    <p class="note">${used>=f.account_limit?'上限に達しています。IDを停止するか、統括管理者に上限の変更を依頼してください。':`あと${f.account_limit-used}件発行できます（停止中のIDは数えません）`}</p>
+  </div>
+  <form class="card" id="issueForm" novalidate>
+    <h2>新しいIDを発行</h2>
+    <div class="chips"><label class="chip"><input type="radio" id="mAuto" name="mode" value="auto" checked><span>自動採番</span></label><label class="chip"><input type="radio" id="mManual" name="mode" value="manual"><span>手動で指定</span></label></div>
+    <label class="field"><span>手動で指定する場合のID（数字・任意の桁数）</span><input id="manualId" inputmode="numeric" placeholder="${f.seq+1}"></label>
+    <p class="note">自動採番の場合、次のIDは <b>${f.seq+1}</b> 以降の空いている番号です。</p>
+    ${S.err?`<p class="err">${esc(S.err)}</p>`:''}
+    <button class="primary" type="submit" ${S.busy?'disabled':''}>${S.busy?'発行中…':'発行して初期パスワードを表示'}</button>
+    ${S.lastIssued?`<div class="box">発行しました<br>管理番号 <b>${f.no}</b><br>個別ID <b>${esc(S.lastIssued.id)}</b><br>初期パスワード <b>${esc(S.lastIssued.pw)}</b><br>この画面を離れると再表示できません。利用者に伝えてください。</div>`:''}
+  </form>
+  <div class="card"><h2>ID一覧</h2>
+    ${users.length?users.map(u=>{const r=lastRec(u.user_id);return `<div class="row"><span><b>${esc(u.user_id)}</b><br><span class="eyebrow">${r?'最終記録 '+slash(r.measured_on):'記録なし'}</span></span><span class="mini"><span class="pill ${u.active?'p-ok':'p-off'}">${u.active?'有効':'停止'}</span><button class="btn small" data-act="toggleUser" data-id="${esc(u.user_id)}" data-on="${u.active?'0':'1'}">${u.active?'停止する':'再開する'}</button></span></div>`}).join(''):'<p class="note">まだIDがありません。上のボタンから発行してください。</p>'}
+  </div>`;
+}
+function itemsTab(f){
+  const its=D.items.filter(i=>!i.hidden), tpls=D.templates;
+  if(!S.tplId||!tpls.some(t=>t.id===S.tplId))S.tplId=tpls[0]?.id||'';
+  const sel=tpls.find(t=>t.id===S.tplId);
+  const canDel=sel&&(S.me.role==='super'||sel.scope===f.no);
+  const tplCard=`<div class="card">
+    <h2>テンプレートから呼び出す</h2>
+    ${tpls.length?`<label class="field"><span>テンプレート</span><select id="tplSel">${tpls.map(t=>`<option value="${t.id}" ${t.id===S.tplId?'selected':''}>${esc(t.name)}${t.scope==='global'?'（全機関共通）':''}</option>`).join('')}</select></label>
+    ${sel?`<div class="chips">${(sel.items||[]).map(i=>`<span class="pill p-off" style="font-size:13px;padding:5px 10px">${esc(i.name)}</span>`).join('')}</div>`:''}
+    ${S.tplConfirm?`<div class="box" style="display:flex;flex-direction:column;gap:10px"><b>今の項目をすべて非表示にして、このテンプレートに置き換えますか？</b>過去の回答データは残ります。<div class="grid2"><button class="btn" data-act="tplCancel">やめる</button><button class="primary" style="height:46px" data-act="tplApply" data-m="replace">置き換える</button></div></div>`
+      :`<div class="grid2"><button class="btn" data-act="tplApply" data-m="add">今の項目に追加</button><button class="btn" data-act="tplAsk">置き換える</button></div>`}
+    ${canDel?`<button class="btn small" data-act="tplDel" style="align-self:flex-start">このテンプレートを削除</button>`:''}`
+    :'<p class="note">まだテンプレートがありません。下の「今の項目をテンプレートとして保存」から作れます。</p>'}
+  </div>`;
+  const list=its.map((it,k)=>`<div class="card">
+    <div class="itemhead"><div><h2>${esc(it.name)}</h2><span class="eyebrow">${TYPES[it.type]}${it.required?' ・必須':''}</span></div>
+      <div class="mini"><button class="btn small" data-act="mv" data-id="${it.id}" data-d="-1" aria-label="上へ移動" ${k===0?'disabled':''}>↑</button><button class="btn small" data-act="mv" data-id="${it.id}" data-d="1" aria-label="下へ移動" ${k===its.length-1?'disabled':''}>↓</button></div></div>
+    ${CHOICE.includes(it.type)?`<div class="chips">${(it.options||[]).map((o,j)=>`<span class="pill p-off" style="font-size:13px;padding:5px 10px">${esc(o)} <button data-act="rmOpt" data-id="${it.id}" data-j="${j}" aria-label="${esc(o)}を削除" style="border:none;background:none;color:inherit;padding:0 0 0 4px">×</button></span>`).join('')}</div>
+      <div class="inline"><input id="opt_${it.id}" placeholder="新しい選択肢" aria-label="${esc(it.name)}に選択肢を追加"><button class="btn" data-act="addOpt" data-id="${it.id}">＋ 追加</button></div>`:''}
+    <label class="check">必須にする<input type="checkbox" id="req_${it.id}" data-act="flag" data-id="${it.id}" data-f="required" ${it.required?'checked':''}></label>
+    <label class="check">体重管理アプリへ送る<input type="checkbox" id="snd_${it.id}" data-act="flag" data-id="${it.id}" data-f="send" ${it.send?'checked':''}></label>
+    <button class="btn small" data-act="hideItem" data-id="${it.id}" style="align-self:flex-start">この項目を使わない</button>
+  </div>`).join('');
+  return tplCard+list+`<form class="card" id="itemForm" novalidate>
+    <h2>項目を追加</h2>
+    <label class="field"><span>項目名</span><input id="niName" placeholder="今週の睡眠時間は？"></label>
+    <label class="field"><span>回答の形式</span><select id="niType">${Object.entries(TYPES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label>
+    <label class="field"><span>選択肢（1行に1つ。選択式のときだけ使います）</span><textarea id="niOpts" placeholder="5時間未満&#10;5〜7時間&#10;7時間以上"></textarea></label>
+    <label class="check">必須にする<input type="checkbox" id="niReq"></label>
+    <label class="check">体重管理アプリへ送る<input type="checkbox" id="niSend" checked></label>
+    ${S.err?`<p class="err">${esc(S.err)}</p>`:''}
+    <button class="primary" type="submit">項目を追加</button>
+  </form>
+  <form class="card" id="tplForm" novalidate>
+    <h2>今の項目をテンプレートとして保存</h2>
+    <label class="field"><span>テンプレート名</span><input id="tplName" placeholder="2026年度 初回面談"></label>
+    ${S.me.role==='super'?'<label class="check">全機関で使えるようにする<input type="checkbox" id="tplGlobal" checked></label>':'<p class="note">保存したテンプレートは、この機関の中で呼び出せます。</p>'}
+    <button class="btn" type="submit">テンプレートとして保存</button>
+  </form>`;
+}
+function payloadFor(uid,fy){
+  const r=D.records.find(r=>r.user_id===uid&&fyOf(r.measured_on)===fy);
+  if(!r)return null;
+  const answers={};
+  D.items.filter(i=>i.send).forEach(i=>{const v=r.answers?.[i.id];if(v!==undefined&&v!==''&&!(Array.isArray(v)&&!v.length))answers[i.name]=v});
+  return {facility_no:S.fac,user_id:uid,fiscal_year:fy,measured_on:r.measured_on,weight:Number(r.weight),waist:Number(r.waist),answers};
+}
+function canon(o){
+  if(Array.isArray(o))return '['+o.map(canon).join(',')+']';
+  if(o&&typeof o==='object')return '{'+Object.keys(o).sort().map(k=>JSON.stringify(k)+':'+canon(o[k])).join(',')+'}';
+  return JSON.stringify(o);
+}
+function sendStatus(uid,fy){
+  const p=payloadFor(uid,fy);if(!p)return {label:'記録なし',cls:'p-off'};
+  const s=D.sends.find(s=>s.user_id===uid&&s.fiscal_year===fy);
+  if(!s)return {label:'未送信',cls:'p-warn'};
+  if(canon(s.body)!==canon(p))return {label:'要再送',cls:'p-warn'};
+  return {label:'送信済み',cls:'p-ok'};
+}
+function sendTab(f){
+  const users=D.profiles.filter(u=>u.role==='user');
+  if(!users.length)return '<div class="card"><p class="note">送信できるIDがありません。「ID管理」でIDを発行してください。</p></div>';
+  if(!S.sendUid||!users.some(u=>u.user_id===S.sendUid))S.sendUid=users[0].user_id;
+  const fys=[...new Set(D.records.map(r=>fyOf(r.measured_on)).concat([fyOf(today())]))].sort((a,b)=>b-a);
+  if(S.sendFy===null)S.sendFy=fyOf(today());
+  const p=payloadFor(S.sendUid,S.sendFy), st=sendStatus(S.sendUid,S.sendFy);
+  const sent=D.sends.find(s=>s.user_id===S.sendUid&&s.fiscal_year===S.sendFy);
+  return `<div class="card"><div class="grid2">
+      <label class="field"><span>個別ID</span><select id="sUid">${users.map(u=>`<option value="${esc(u.user_id)}" ${u.user_id===S.sendUid?'selected':''}>${esc(u.user_id)}</option>`).join('')}</select></label>
+      <label class="field"><span>年度</span><select id="sFy">${fys.map(y=>`<option value="${y}" ${y===S.sendFy?'selected':''}>${y}年度</option>`).join('')}</select></label>
+    </div></div>
+    <div class="card">
+      <div class="row" style="border:none;padding:0"><h2>送信内容</h2><span class="pill ${st.cls}">${st.label}</span></div>
+      ${p?`<div>
+        <div class="row"><span class="k">キー</span><span class="v">${f.no} ／ ${esc(p.user_id)} ／ ${p.fiscal_year}</span></div>
+        <div class="row"><span class="k">測定日</span><span class="v">${slash(p.measured_on)}</span></div>
+        <div class="row"><span class="k">体重</span><span class="v">${p.weight} kg</span></div>
+        <div class="row"><span class="k">腹囲</span><span class="v">${p.waist} cm</span></div>
+        ${Object.entries(p.answers).map(([k,v])=>`<div class="row"><span class="k">${esc(k)}</span><span class="v">${esc(Array.isArray(v)?v.join('、'):v)}</span></div>`).join('')}
+      </div>`:'<p class="note">この年度の記録がありません。</p>'}
+      ${sent?`<p class="note">前回の送信：${new Date(sent.sent_at).toLocaleString('ja-JP')}</p>`:''}
+    </div>
+    ${p?(S.confirm?`<div class="card confirm"><h2>この内容で体重管理アプリへ送信しますか？</h2><p class="note">同じID・年度のデータは上書きされます。</p><div class="grid2"><button class="btn" data-act="cancelSend">やめる</button><button class="primary" style="height:46px" data-act="doSend">送信する</button></div></div>`
+      :`<button class="primary huge" data-act="askSend"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"></path><path d="M22 2 15 22l-4-9-9-4 20-7z"></path></svg>アプリへ送信</button>`):''}
+    ${S.lastPayload?`<div class="card"><h2>送信したデータ</h2><pre>${esc(JSON.stringify(S.lastPayload,null,2))}</pre><p class="note">体重管理アプリとの接続は、連携先が決まりしだい設定します。今は送信記録をデータベースに保存しています。</p></div>`:''}
+    <div class="card"><h2>${S.sendFy}年度の送信状況</h2>${users.map(u=>{const s=sendStatus(u.user_id,S.sendFy);return `<div class="row"><span>ID ${esc(u.user_id)}</span><span class="pill ${s.cls}">${s.label}</span></div>`}).join('')}</div>`;
+}
+function superView(){
+  const facs=D.facs||[], cnt=no=>(D.profiles||[]).filter(p=>p.fac===no&&p.role==='user'&&p.active).length;
+  const total=facs.reduce((a,f)=>a+cnt(f.no),0);
+  return header('統括管理者','全機関')+
+  `<div class="grid2"><div class="card" style="gap:2px"><span class="lbl">機関</span><span class="big">${facs.length}</span></div><div class="card" style="gap:2px"><span class="lbl">有効なID</span><span class="big">${total}</span></div></div>
+  ${facs.length?'':'<div class="card"><p class="note">まだ機関がありません。下の「機関を登録」から最初の機関を登録してください。</p></div>'}
+  ${facs.map(f=>{const u=cnt(f.no),opts=[...new Set(LIMITS.concat(f.account_limit))].sort((a,b)=>a-b);return `<div class="card">
+    <div class="itemhead"><h2>${esc(f.name)}</h2><span class="eyebrow">${f.no}</span></div>
+    <div class="inline"><div class="bar" style="flex:1"><i class="${u>=f.account_limit?'full':''}" style="width:${f.account_limit?Math.min(100,Math.round(u/f.account_limit*100)):100}%"></i></div><span style="font-variant-numeric:tabular-nums;font-weight:500">${u} ／ ${f.account_limit}</span></div>
+    <div class="inline"><label class="lbl" for="lim_${f.no}">上限</label><select id="lim_${f.no}" data-act="limit" data-no="${f.no}" style="width:auto">${opts.map(n=>`<option ${n===f.account_limit?'selected':''}>${n}</option>`).join('')}</select><button class="btn" data-act="openFac" data-no="${f.no}" style="margin-left:auto">管理画面へ</button></div>
+  </div>`}).join('')}
+  <form class="card" id="facForm" novalidate>
+    <h2>機関を登録</h2>
+    <label class="field"><span>管理番号（10桁）</span><input id="nfNo" inputmode="numeric" maxlength="10" placeholder="1234567890"></label>
+    <label class="field"><span>機関名</span><input id="nfName" placeholder="○○健康センター"></label>
+    <label class="field"><span>アカウント上限</span><select id="nfLimit">${LIMITS.map(n=>`<option ${n===30?'selected':''}>${n}</option>`).join('')}</select></label>
+    <p class="note">登録すると、機関管理者のアカウント（ID：kanri）が作られ、初期パスワードが表示されます。</p>
+    ${S.err?`<p class="err">${esc(S.err)}</p>`:''}
+    <button class="primary" type="submit" ${S.busy?'disabled':''}>${S.busy?'登録中…':'登録する'}</button>
+    ${S.lastIssued?`<div class="box">登録しました<br>管理番号 <b>${esc(S.lastIssued.fac)}</b><br>ID <b>kanri</b><br>初期パスワード <b>${esc(S.lastIssued.pw)}</b><br>この画面を離れると再表示できません。機関の管理者に伝えてください。</div>`:''}
+  </form>`;
+}
+
+// ---------- ログイン登録（発行用の別クライアント。今のログイン状態は変えない） ----------
+async function createLogin(email,pw){
+  const tmp=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false,storageKey:'tmp-signup'}});
+  const {error}=await tmp.auth.signUp({email,password:pw});
+  if(error)throw error;
+  await tmp.auth.signOut().catch(()=>{});
+}
+
+// ---------- 操作 ----------
+document.addEventListener('submit',e=>{
+  e.preventDefault();S.err='';
+  const id=e.target.id;
+  if(id==='loginForm'){
+    const f=$('#lgFac').value.trim(), u=$('#lgId').value.trim(), p=$('#lgPw').value;
+    if(!/^\d{10}$/.test(f)){S.err='管理番号は10桁の数字で入力してください。';return render()}
+    if(!u||!p){S.err='IDとパスワードを入力してください。';return render()}
+    S.busy=true;render();
+    (async()=>{
+      try{
+        const {error}=await sb.auth.signInWithPassword({email:emailFor(f,u),password:p});
+        if(error)throw error;
+        await loadMe();
+        S.tab='input';S.adminTab='accounts';S.view='main';
+      }catch(err){S.err=jpErr(err)}
+      S.busy=false;await refresh();
+    })();
+    return;
+  }
+  if(id==='pwForm'){
+    const a=$('#pw1').value,b=$('#pw2').value;
+    if(a.length<8){S.err='パスワードは8文字以上にしてください。';return render()}
+    if(a!==b){S.err='2回の入力が一致しません。';return render()}
+    return act(async()=>{await q(sb.auth.updateUser({password:a}));S.view='main';toast('パスワードを変更しました')});
+  }
+  if(id==='recForm'){
+    const date=$('#rDate').value, w=parseFloat($('#rW').value), wa=parseFloat($('#rWa').value);
+    if(!date||!(w>0&&w<300)||!(wa>0&&wa<250)){S.err='測定日・体重・腹囲を正しく入力してください。';return render()}
+    const fd=new FormData(e.target), answers={};
+    for(const it of D.items){
+      const v=it.type==='check'?fd.getAll('q_'+it.id):(fd.get('q_'+it.id)||'').trim();
+      if(it.required&&(!v||v.length===0)){S.err=`「${it.name}」は必須です。`;return render()}
+      if(v&&v.length)answers[it.id]=it.type==='number'?Number(v):v;
+    }
+    return act(async()=>{
+      await q(sb.from('records').upsert({fac:S.me.fac,user_id:S.me.user_id,measured_on:date,weight:Math.round(w*10)/10,waist:Math.round(wa*10)/10,answers,updated_at:new Date().toISOString()},{onConflict:'fac,user_id,measured_on'}));
+      toast('保存しました');S.tab='history';
+    });
+  }
+  if(id==='issueForm'){
+    const manual=$('#mManual').checked, mid=$('#manualId').value.trim();
+    if(manual&&!/^\d+$/.test(mid)){S.err='IDは数字で入力してください。';return render()}
+    return act(async()=>{
+      const rows=await q(sb.rpc('reserve_account',{p_fac:S.fac,p_manual:manual?mid:null}));
+      const r=rows[0], pw=randPw();
+      try{await createLogin(r.new_email,pw)}
+      catch(err){await sb.rpc('cancel_reservation',{p_fac:S.fac,p_id:r.new_id});throw err}
+      S.lastIssued={id:r.new_id,pw};toast('IDを発行しました');
+    });
+  }
+  if(id==='itemForm'){
+    const name=$('#niName').value.trim(), type=$('#niType').value, opts=$('#niOpts').value.split('\n').map(s=>s.trim()).filter(Boolean);
+    if(!name){S.err='項目名を入力してください。';return render()}
+    if(CHOICE.includes(type)&&opts.length<2){S.err='選択式の項目には、選択肢を2つ以上入力してください。';return render()}
+    const sort=Math.max(0,...D.items.map(i=>i.sort))+1;
+    return act(async()=>{await q(sb.from('items').insert({fac:S.fac,name,type,options:CHOICE.includes(type)?opts:[],required:$('#niReq').checked,send:$('#niSend').checked,sort}));toast('項目を追加しました')});
+  }
+  if(id==='tplForm'){
+    const name=$('#tplName').value.trim(), its=D.items.filter(i=>!i.hidden);
+    if(!name){toast('テンプレート名を入力してください');return}
+    if(!its.length){toast('保存する項目がありません');return}
+    const g=$('#tplGlobal')&&$('#tplGlobal').checked;
+    return act(async()=>{
+      const t=await q(sb.from('templates').insert({scope:g?'global':S.fac,name,items:its.map(i=>({name:i.name,type:i.type,options:i.options,required:i.required,send:i.send}))}).select().single());
+      S.tplId=t.id;toast('テンプレートを保存しました');
+    });
+  }
+  if(id==='facForm'){
+    const no=$('#nfNo').value.trim(), name=$('#nfName').value.trim(), limit=Number($('#nfLimit').value);
+    if(!/^\d{10}$/.test(no)){S.err='管理番号は10桁の数字で入力してください。';return render()}
+    if(no===SUPER_FAC||(D.facs||[]).some(f=>f.no===no)){S.err='この管理番号はすでに使われています。';return render()}
+    if(!name){S.err='機関名を入力してください。';return render()}
+    return act(async()=>{
+      const email=await q(sb.rpc('create_facility',{p_no:no,p_name:name,p_limit:limit}));
+      const pw=randPw();
+      await createLogin(email,pw);
+      S.lastIssued={fac:no,pw};toast('機関を登録しました');
+    });
+  }
+});
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b||b.tagName==='SELECT'||b.type==='checkbox')return;
+  const a=b.dataset.act;
+  if(a==='step'){const el=document.getElementById(b.dataset.t);const v=(parseFloat(el.value)||0)+parseFloat(b.dataset.d);el.value=(Math.round(v*10)/10).toFixed(1);return}
+  S.err='';
+  if(a==='logout')return act(async()=>{await sb.auth.signOut();S.me=null;S.fac=null;S.lastIssued=null;S.view='main';D={}});
+  if(a==='pw'){S.view='pw';return render()}
+  if(a==='back'){S.view='main';return refresh()}
+  if(a==='tab'){S.tab=b.dataset.v;return render()}
+  if(a==='atab'){S.adminTab=b.dataset.v;S.confirm=false;S.lastIssued=null;S.tplConfirm=false;return render()}
+  if(a==='openFac'){S.fac=b.dataset.no;S.adminTab='accounts';S.sendFy=null;S.lastPayload=null;S.lastIssued=null;D={};render();return refresh()}
+  if(a==='backSuper'){S.fac=null;S.lastIssued=null;D={};render();return refresh()}
+  if(a==='toggleUser')return act(async()=>{await q(sb.rpc('set_user_active',{p_fac:S.fac,p_id:b.dataset.id,p_active:b.dataset.on==='1'}));toast(b.dataset.on==='1'?'再開しました':'停止しました')});
+  if(a==='mv'){
+    const its=D.items.filter(i=>!i.hidden),k=its.findIndex(i=>i.id===b.dataset.id),j=k+Number(b.dataset.d);if(j<0||j>=its.length)return;
+    return act(async()=>{
+      const list=its.slice();[list[k],list[j]]=[list[j],list[k]];
+      await Promise.all(list.map((it,n)=>q(sb.from('items').update({sort:n+1}).eq('id',it.id))));
+    });
+  }
+  if(a==='addOpt'){
+    const it=D.items.find(i=>i.id===b.dataset.id),v=$('#opt_'+it.id).value.trim();if(!v)return;
+    if((it.options||[]).includes(v)){toast('同じ選択肢があります');return}
+    return act(async()=>{await q(sb.from('items').update({options:[...(it.options||[]),v]}).eq('id',it.id))});
+  }
+  if(a==='rmOpt'){
+    const it=D.items.find(i=>i.id===b.dataset.id);if((it.options||[]).length<=2){toast('選択肢は2つ以上必要です');return}
+    const j=Number(b.dataset.j);
+    return act(async()=>{await q(sb.from('items').update({options:it.options.filter((_,n)=>n!==j)}).eq('id',it.id))});
+  }
+  if(a==='hideItem')return act(async()=>{await q(sb.from('items').update({hidden:true}).eq('id',b.dataset.id));toast('項目を非表示にしました')});
+  if(a==='tplAsk'){S.tplConfirm=true;return render()}
+  if(a==='tplCancel'){S.tplConfirm=false;return render()}
+  if(a==='tplApply'){
+    const t=D.templates.find(t=>t.id===S.tplId);if(!t)return;
+    const replace=b.dataset.m==='replace';
+    return act(async()=>{
+      if(replace)await q(sb.from('items').update({hidden:true}).eq('fac',S.fac).eq('hidden',false));
+      const have=replace?[]:D.items.filter(i=>!i.hidden).map(i=>i.name);
+      let sort=replace?0:Math.max(0,...D.items.map(i=>i.sort));
+      const rows=(t.items||[]).filter(i=>!have.includes(i.name)).map(i=>({fac:S.fac,name:i.name,type:i.type,options:i.options||[],required:!!i.required,send:i.send!==false,sort:++sort}));
+      if(rows.length)await q(sb.from('items').insert(rows));
+      S.tplConfirm=false;toast(replace?'テンプレートに置き換えました':`${rows.length}件の項目を追加しました`);
+    });
+  }
+  if(a==='tplDel')return act(async()=>{await q(sb.from('templates').delete().eq('id',S.tplId));S.tplId='';toast('テンプレートを削除しました')});
+  if(a==='askSend'){S.confirm=true;return render()}
+  if(a==='cancelSend'){S.confirm=false;return render()}
+  if(a==='doSend'){
+    const p=payloadFor(S.sendUid,S.sendFy);if(!p)return;
+    return act(async()=>{
+      await q(sb.from('sends').upsert({fac:S.fac,user_id:S.sendUid,fiscal_year:S.sendFy,body:p,sent_at:new Date().toISOString()},{onConflict:'fac,user_id,fiscal_year'}));
+      S.confirm=false;S.lastPayload=p;toast('送信しました');
+    });
+  }
+});
+
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.dataset.act==='flag')return act(async()=>{await q(sb.from('items').update({[t.dataset.f]:t.checked}).eq('id',t.dataset.id))});
+  if(t.id==='tplSel'){S.tplId=t.value;S.tplConfirm=false;return render()}
+  if(t.id==='sUid'){S.sendUid=t.value;S.confirm=false;S.lastPayload=null;return render()}
+  if(t.id==='sFy'){S.sendFy=Number(t.value);S.confirm=false;S.lastPayload=null;return render()}
+  if(t.dataset.act==='limit')return act(async()=>{await q(sb.from('facilities').update({account_limit:Number(t.value)}).eq('no',t.dataset.no));toast('上限を変更しました')});
+});
+
+(async()=>{
+  try{await loadMe()}catch(e){S.err=jpErr(e)}
+  await refresh();
+})();
+</script>
+</body>
+</html>
