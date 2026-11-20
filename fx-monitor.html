@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>為替急変モニター</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="為替モニター">
+<meta name="theme-color" content="#F3F5F4">
+<style>
+:root{
+  --bg:#F3F5F4; --card:#FFFFFF; --text:#1B2420; --muted:#66736D; --line:#DDE3E0;
+  --accent:#2F6F5E; --up:#C2410C; --down:#1D4ED8; --warn:#B45309; --alert:#B91C1C;
+  --alert-bg:#FDECEC; --warn-bg:#FEF4E3; --ok-bg:#E8F3EE; --chart-grid:#ECEFEE;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121715; --card:#1B2220; --text:#E6ECE9; --muted:#93A19B; --line:#2C3633;
+    --accent:#6FC3A8; --up:#FB923C; --down:#60A5FA; --warn:#FBBF24; --alert:#F87171;
+    --alert-bg:#3A1F1F; --warn-bg:#352B17; --ok-bg:#1C2E27; --chart-grid:#242D2A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121715; --card:#1B2220; --text:#E6ECE9; --muted:#93A19B; --line:#2C3633;
+  --accent:#6FC3A8; --up:#FB923C; --down:#60A5FA; --warn:#FBBF24; --alert:#F87171;
+  --alert-bg:#3A1F1F; --warn-bg:#352B17; --ok-bg:#1C2E27; --chart-grid:#242D2A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif;font-size:15px;line-height:1.5}
+.wrap{max-width:960px;margin:0 auto;padding:12px 16px 48px}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+h1{font-size:20px;margin:0}
+.sub{color:var(--muted);font-size:12px}
+button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;padding:8px 12px;cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.status{font-size:12px;color:var(--muted)}
+.status.err{color:var(--alert)}
+.banner{display:none;border-radius:12px;padding:12px 14px;margin:10px 0;background:var(--alert-bg);border:1px solid var(--alert)}
+.banner.show{display:block}
+.banner b{color:var(--alert)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.card.lv1{border-color:var(--warn);background:linear-gradient(var(--warn-bg),var(--card) 60%)}
+.card.lv2{border-color:var(--alert);background:linear-gradient(var(--alert-bg),var(--card) 60%)}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.pair{font-weight:700;font-size:16px}
+.price{font-variant-numeric:tabular-nums;font-size:24px;font-weight:700}
+.chg{font-variant-numeric:tabular-nums;font-size:13px}
+.up{color:var(--up)} .down{color:var(--down)}
+.badge{font-size:12px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.badge.lv0{background:var(--ok-bg);color:var(--accent);border-color:transparent}
+.badge.lv1{background:var(--warn-bg);color:var(--warn);border-color:var(--warn)}
+.badge.lv2{background:var(--alert-bg);color:var(--alert);border-color:var(--alert)}
+canvas{width:100%;height:110px;display:block;margin:6px 0}
+.meter{height:6px;border-radius:3px;background:var(--chart-grid);position:relative;overflow:hidden;margin:4px 0 2px}
+.meter i{position:absolute;top:0;bottom:0;border-radius:3px}
+.small{font-size:12px;color:var(--muted)}
+.pred{margin-top:8px;padding:8px;border-radius:10px;background:var(--bg);font-size:13px}
+.pred .big{font-size:15px;font-weight:700}
+.pred ul{margin:4px 0 0;padding-left:18px}
+.pred li{font-size:12px;color:var(--muted)}
+section{margin-top:18px}
+h2{font-size:16px;margin:0 0 8px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12px}
+.tablewrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 8px}
+details.settings{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:12px}
+details.settings summary{cursor:pointer;font-weight:600}
+.form{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:10px}
+label{display:flex;flex-direction:column;font-size:12px;color:var(--muted);gap:4px}
+input,select{font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 8px;min-width:0}
+.checks{display:flex;flex-wrap:wrap;gap:8px 14px}
+.checks label{flex-direction:row;align-items:center;color:var(--text);font-size:14px}
+.note{font-size:12px;color:var(--muted);margin-top:14px}
+.stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;font-size:13px}
+.stats b{font-size:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>為替急変モニター</h1>
+      <div class="sub">極端な値動きを検知して通知し、その後どちらに動きやすいかを見立てます</div>
+    </div>
+    <div class="bar">
+      <button id="btnStart" class="primary">監視を開始</button>
+      <button id="btnNotify">通知を許可</button>
+    </div>
+  </header>
+  <div class="status" id="status">停止中</div>
+
+  <div class="banner" id="banner"></div>
+
+  <div class="grid" id="cards"></div>
+
+  <details class="settings" id="settingsBox">
+    <summary>設定</summary>
+    <div class="form">
+      <label>データの取得元
+        <select id="s_source">
+          <option value="coinbase">Coinbase（キー不要・数十秒ごと）</option>
+          <option value="twelvedata">Twelve Data（無料APIキー・1分足の履歴あり）</option>
+          <option value="demo">デモ（模擬データ・動作確認用）</option>
+        </select>
+      </label>
+      <label id="keyWrap">Twelve Data APIキー
+        <input id="s_key" type="password" autocomplete="off" placeholder="twelvedata.com で無料取得">
+      </label>
+      <label>取得間隔（秒）
+        <input id="s_poll" type="number" min="5" step="1">
+      </label>
+      <label>急変を判定する時間幅（分）
+        <input id="s_window" type="number" min="1" step="1">
+      </label>
+      <label>急変とみなす強さ（σ：普段の何倍の動きか）
+        <input id="s_z" type="number" min="1.5" step="0.5">
+      </label>
+      <label>最低限の値幅（pips）
+        <input id="s_minpips" type="number" min="0" step="1">
+      </label>
+      <label>無条件で急変とする値幅（pips）
+        <input id="s_abspips" type="number" min="1" step="1">
+      </label>
+      <label>予想する先の時間（分）
+        <input id="s_horizon" type="number" min="1" step="1">
+      </label>
+      <label>同じ通貨ペアの再通知までの間隔（分）
+        <input id="s_cooldown" type="number" min="1" step="1">
+      </label>
+      <label>音
+        <select id="s_sound"><option value="1">鳴らす</option><option value="0">鳴らさない</option></select>
+      </label>
+    </div>
+    <div style="margin-top:10px">
+      <div class="small" style="margin-bottom:4px">監視する通貨ペア</div>
+      <div class="checks" id="s_pairs"></div>
+    </div>
+    <div class="small" id="creditNote" style="margin-top:8px"></div>
+    <div class="bar" style="margin-top:10px">
+      <button id="btnSave" class="primary">設定を保存して再開</button>
+      <button id="btnReset">記録を消去</button>
+    </div>
+  </details>
+
+  <section>
+    <h2>急変の記録と予想の答え合わせ</h2>
+    <div class="stats" id="stats"></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>時刻</th><th>ペア</th><th>急変</th><th>予想</th><th>結果</th></tr></thead>
+        <tbody id="log"><tr><td colspan="5" class="small">まだ急変はありません</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="note">
+    ※予想は過去の値動きのパターンをもとにした「傾向の目安」です。為替の短期の動きは本質的に予測が難しく、的中を保証するものではありません。投資判断はご自身の責任で行ってください。<br>
+    ※スマホでは画面を閉じたりアプリを切り替えたりすると監視が止まります。パソコンのブラウザで、このタブを開いたままにしておくのが確実です。
+  </p>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+// ---------- 通貨ペアの定義 ----------
+// cb: Coinbase の USD 建てレート表から値を計算する関数
+const PAIRS = {
+  'USD/JPY': { pip: 0.01,   dp: 3, cb: r => r.JPY },
+  'EUR/JPY': { pip: 0.01,   dp: 3, cb: r => r.JPY / r.EUR },
+  'GBP/JPY': { pip: 0.01,   dp: 3, cb: r => r.JPY / r.GBP },
+  'AUD/JPY': { pip: 0.01,   dp: 3, cb: r => r.JPY / r.AUD },
+  'EUR/USD': { pip: 0.0001, dp: 5, cb: r => 1 / r.EUR },
+  'GBP/USD': { pip: 0.0001, dp: 5, cb: r => 1 / r.GBP },
+  'AUD/USD': { pip: 0.0001, dp: 5, cb: r => 1 / r.AUD },
+};
+
+const DEFAULTS = {
+  source: 'coinbase', key: '', poll: 15, window: 5, z: 3, minPips: 15, absPips: 50,
+  horizon: 15, cooldown: 10, sound: '1', pairs: ['USD/JPY', 'EUR/JPY', 'EUR/USD'],
+};
+const KEEP_MS = 8 * 3600e3;     // 保持する履歴の長さ
+const MIN_SAMPLES = 20;         // 判定を始めるのに必要な件数
+const LAMBDA = 0.97;            // ボラティリティの平滑化係数
+
+// ---------- 保存 ----------
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('fxm.' + k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem('fxm.' + k, JSON.stringify(v)); } catch {} },
+};
+let S = Object.assign({}, DEFAULTS, store.get('settings', {}));
+let series = {};   // pair -> {pts:[{t,p}], v: 秒あたり分散, n}
+let events = store.get('events', []);
+let running = false, timer = null, lastOk = 0, errMsg = '';
+let simClock = 0, simState = {};
+const live = {};   // pair -> 最新の判定結果
+
+function loadSeries() {
+  if (S.source === 'demo') { series = {}; return; }
+  const saved = store.get('series.' + S.source, {});
+  series = {};
+  for (const p of Object.keys(saved)) {
+    const s = saved[p];
+    if (s && Array.isArray(s.pts)) series[p] = s;
+  }
+}
+let saveTimer = 0;
+function saveSeries() {
+  if (S.source === 'demo') return;
+  if (Date.now() - saveTimer < 10000) return;
+  saveTimer = Date.now();
+  store.set('series.' + S.source, series);
+}
+function saveEvents() { store.set('events', events.slice(-300)); }
+
+const now = () => S.source === 'demo' ? simClock : Date.now();
+
+// ---------- 計算 ----------
+function ser(pair) { return series[pair] || (series[pair] = { pts: [], v: null, n: 0 }); }
+
+function addSample(pair, t, p) {
+  if (!isFinite(p) || p <= 0) return;
+  const s = ser(pair);
+  const last = s.pts[s.pts.length - 1];
+  if (last && t <= last.t) return;
+  if (last && p === last.p) { last.seen = t; return; }   // 値が変わらない間は記録しない
+  if (last) {
+    const dt = Math.max(1, (t - last.t) / 1000);
+    const r = Math.log(p / last.p);
+    let x = r * r / dt;
+    if (s.v != null) x = Math.min(x, s.v * 25);           // 急変そのものでボラが膨らみすぎないよう抑える
+    s.v = s.v == null ? x : LAMBDA * s.v + (1 - LAMBDA) * x;
+    s.n++;
+  }
+  s.pts.push({ t, p });
+  const cut = t - KEEP_MS;
+  while (s.pts.length && s.pts[0].t < cut) s.pts.shift();
+}
+
+function priceAt(pts, t) {
+  // t 以前で最も新しい点
+  let lo = 0, hi = pts.length - 1, ans = -1;
+  while (lo <= hi) { const m = (lo + hi) >> 1; if (pts[m].t <= t) { ans = m; lo = m + 1; } else hi = m - 1; }
+  return ans;
+}
+
+function rsi(pts, n = 14) {
+  if (pts.length < n + 1) return 50;
+  let g = 0, l = 0;
+  for (let i = pts.length - n; i < pts.length; i++) {
+    const d = pts[i].p - pts[i - 1].p;
+    if (d > 0) g += d; else l -= d;
+  }
+  if (g + l === 0) return 50;
+  return 100 * g / (g + l);
+}
+
+function analyze(pair) {
+  const s = series[pair];
+  const def = PAIRS[pair];
+  if (!s || !s.pts.length) return null;
+  const pts = s.pts, last = pts[pts.length - 1], t = now();
+  const res = { pair, p: last.p, t: last.seen || last.t, ready: false, level: 0 };
+  if (s.n < MIN_SAMPLES || s.v == null || s.v <= 0) { res.need = MIN_SAMPLES - s.n; return res; }
+  const W = S.window * 60e3;
+  let bi = priceAt(pts, t - W);
+  if (bi < 0) { if (t - pts[0].t < W * 0.5) { res.need = 1; return res; } bi = 0; }
+  const base = pts[bi];
+  const sigW = Math.sqrt(s.v * (W / 1000));
+  const rW = Math.log(last.p / base.p);
+  const z = rW / sigW;
+  const pips = (last.p - base.p) / def.pip;
+  res.ready = true; res.z = z; res.pips = pips; res.base = base; res.sigW = sigW; res.bi = bi;
+  const az = Math.abs(z), ap = Math.abs(pips);
+  if ((az >= S.z && ap >= S.minPips) || ap >= S.absPips) res.level = 2;
+  else if (az >= S.z * 0.66 && ap >= S.minPips * 0.5) res.level = 1;
+  if (res.level > 0) res.pred = predict(pair, res);
+  return res;
+}
+
+// 急変の後に「どちらに寄りやすいか」を見立てる。
+// 各要素は +（急変と同じ方向に続く）／−（戻る）で -1〜+1 の値をとる。
+function predict(pair, a) {
+  const s = series[pair], pts = s.pts, def = PAIRS[pair];
+  const last = pts[pts.length - 1];
+  const dir = Math.sign(a.z) || 1;
+  const sigSec = Math.sqrt(s.v);
+  const W = S.window * 60e3;
+  const f = [];
+
+  // 1. 直近の勢い（判定時間幅の 1/5）
+  const Ws = W / 5;
+  let si = priceAt(pts, last.t - Ws); if (si < 0) si = 0;
+  const rS = Math.log(last.p / pts[si].p) * dir;
+  const f1 = clamp(rS / (sigSec * Math.sqrt(Ws / 1000)) / 2, -1, 1);
+  f.push({ w: 0.9, v: f1, txt: f1 > 0.2 ? '直近も同じ方向に動き続けている' : f1 < -0.2 ? '直近は反対方向に動き始めている' : '直近の勢いは弱まっている' });
+
+  // 2. 戻りの大きさ（判定時間幅の中の最高値／最安値からどれだけ戻ったか）
+  let ext = a.base.p;
+  for (let i = a.bi; i < pts.length; i++) ext = dir > 0 ? Math.max(ext, pts[i].p) : Math.min(ext, pts[i].p);
+  const span = Math.abs(ext - a.base.p) || def.pip;
+  const retr = clamp((ext - last.p) * dir / span, 0, 1);
+  const f2 = clamp(0.6 - 3.2 * retr, -1, 0.6);
+  f.push({ w: 1.0, v: f2, txt: retr < 0.1 ? '高値（安値）を更新中' : `急変幅の${Math.round(retr * 100)}%を戻している` });
+
+  // 3. 過熱感（RSI）
+  const r = rsi(pts);
+  const rd = dir > 0 ? r : 100 - r;
+  const f3 = -clamp((rd - 70) / 20, 0, 1);
+  f.push({ w: 0.8, v: f3, txt: f3 < -0.3 ? `買われすぎ／売られすぎ（RSI ${r.toFixed(0)}）で反動が出やすい` : `過熱感はそれほどない（RSI ${r.toFixed(0)}）` });
+
+  // 4. 動きの大きさ（大きすぎる急変は行き過ぎて戻りやすい）
+  const az = Math.abs(a.z);
+  const f4 = az < 4.5 ? 0.3 : -clamp((az - 4.5) / 3, 0, 1) * 0.8;
+  f.push({ w: 0.6, v: f4, txt: az < 4.5 ? '急変の規模は中程度で、流れが続きやすい' : '普段の何倍もの急変で、行き過ぎの反動に注意' });
+
+  // 5. より長い流れ（判定時間幅の 6 倍）との一致
+  const Wl = W * 6;
+  let li = priceAt(pts, last.t - Wl); if (li < 0) li = 0;
+  const rL = Math.log(a.base.p / pts[li].p) * dir;
+  const f5 = clamp(rL / (sigSec * Math.sqrt(Math.max(1, (a.base.t - pts[li].t) / 1000))), -1, 1) * 0.7;
+  f.push({ w: 0.6, v: f5, txt: f5 > 0.15 ? 'それまでの大きな流れと同じ方向' : f5 < -0.15 ? 'それまでの大きな流れとは逆方向' : 'それまでは目立った流れがなかった' });
+
+  // 6. このペアの過去の急変で、流れが続いた割合（記録が増えるほど効く）
+  const past = events.filter(e => e.pair === pair && e.cont != null && S.source === e.src);
+  let f6 = 0;
+  if (past.length) {
+    const c = (past.filter(e => e.cont).length + 1) / (past.length + 2);
+    f6 = (c - 0.5) * 2 * (past.length / (past.length + 10));
+    f.push({ w: 0.8, v: f6, txt: `過去${past.length}回の急変では${Math.round(c * 100)}%が同じ方向に続いた` });
+  }
+
+  const score = f.reduce((acc, x) => acc + x.w * x.v, 0);
+  const pc = clamp(1 / (1 + Math.exp(-0.9 * score)), 0.28, 0.72);   // 流れが続く確率（控えめに上下限を設ける）
+  const pdir = pc >= 0.5 ? dir : -dir;
+  const prob = Math.max(pc, 1 - pc);
+  const H = S.horizon * 60;
+  const band = last.p * (Math.exp(sigSec * Math.sqrt(H) * 1.5) - 1);  // 普段の値動きを1.5倍にした幅
+  return {
+    dir: prob < 0.55 ? 0 : pdir, spike: dir, prob, cont: pc >= 0.5,
+    lo: last.p - band, hi: last.p + band,
+    factors: f.sort((x, y) => Math.abs(y.w * y.v) - Math.abs(x.w * x.v)).slice(0, 4),
+  };
+}
+
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+
+// ---------- 急変の記録と答え合わせ ----------
+function checkEvents(pair, a) {
+  if (!a || !a.ready) return;
+  const t = now();
+  // 答え合わせ
+  for (const e of events) {
+    if (e.pair !== pair || e.result != null || e.src !== S.source) continue;
+    if (t >= e.evalAt) {
+      const moved = a.p - e.p;
+      e.after = a.p;
+      e.cont = Math.sign(moved) === e.spike;
+      e.result = e.pdir === 0 ? 'neutral' : (Math.sign(moved) === e.pdir ? 'hit' : 'miss');
+      saveEvents();
+      renderLog();
+    }
+  }
+  if (a.level < 2) return;
+  const lastE = [...events].reverse().find(e => e.pair === pair && e.src === S.source);
+  const dir = Math.sign(a.z) || 1;
+  if (lastE && t - lastE.t < S.cooldown * 60e3 && lastE.spike === dir) return;
+  const pr = a.pred;
+  const e = {
+    id: t + pair, src: S.source, pair, t, p: a.p, spike: dir, z: +a.z.toFixed(2), pips: +a.pips.toFixed(1),
+    pdir: pr.dir, prob: +pr.prob.toFixed(2), lo: pr.lo, hi: pr.hi, evalAt: t + S.horizon * 60e3, result: null,
+  };
+  events.push(e);
+  saveEvents();
+  alertUser(e, pr);
+  renderLog();
+}
+
+// ---------- 通知 ----------
+let audioCtx = null;
+function beep(up) {
+  if (S.sound !== '1' || !audioCtx) return;
+  const freqs = up ? [660, 880, 1100] : [1100, 880, 660];
+  freqs.forEach((f, i) => {
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.frequency.value = f; o.type = 'sine';
+    const t0 = audioCtx.currentTime + i * 0.18;
+    g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.25, t0 + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.16);
+    o.connect(g).connect(audioCtx.destination); o.start(t0); o.stop(t0 + 0.17);
+  });
+}
+function dirWord(d) { return d > 0 ? '上昇' : d < 0 ? '下落' : '方向感なし'; }
+function predWord(e) {
+  if (e.pdir === 0) return 'どちらとも言えない';
+  return `${e.pdir > 0 ? '上' : '下'}方向に寄りやすい（${Math.round(e.prob * 100)}%）`;
+}
+function alertUser(e) {
+  const def = PAIRS[e.pair];
+  const title = `${e.pair} 急${e.spike > 0 ? '騰' : '落'} ${e.pips > 0 ? '+' : ''}${e.pips.toFixed(0)}pips`;
+  const body = `${S.window}分で普段の${Math.abs(e.z).toFixed(1)}倍の動き（${e.p.toFixed(def.dp)}）\n${S.horizon}分後の見立て：${predWord(e)}`;
+  const b = document.getElementById('banner');
+  b.innerHTML = `<b>${esc(title)}</b><br>${esc(body).replace(/\n/g, '<br>')}<br><span class="small">${fmtTime(e.t)}</span>`;
+  b.classList.add('show');
+  beep(e.spike > 0);
+  try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch {}
+  try {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification(title, { body, tag: e.pair, renotify: true });
+    }
+  } catch {}
+  flashTitle(title);
+}
+let flashT = 0;
+function flashTitle(msg) {
+  clearInterval(flashT);
+  const orig = '為替急変モニター'; let k = 0;
+  flashT = setInterval(() => { document.title = (k++ % 2) ? orig : '⚠ ' + msg; if (k > 20) { clearInterval(flashT); document.title = orig; } }, 1000);
+}
+
+// ---------- データ取得 ----------
+async function fetchJSON(url) {
+  const r = await fetch(url, { cache: 'no-store' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+async function pollCoinbase() {
+  const j = await fetchJSON('https://api.coinbase.com/v2/exchange-rates?currency=USD');
+  const raw = j && j.data && j.data.rates;
+  if (!raw) throw new Error('レートを読み取れませんでした');
+  const r = {}; for (const k in raw) r[k] = parseFloat(raw[k]);
+  const t = Date.now();
+  for (const pair of S.pairs) addSample(pair, t, PAIRS[pair].cb(r));
+}
+async function pollTwelve() {
+  if (!S.key) throw new Error('Twelve Data の APIキーを設定してください');
+  const sym = S.pairs.join(',');
+  const j = await fetchJSON(`https://api.twelvedata.com/price?symbol=${encodeURIComponent(sym)}&apikey=${encodeURIComponent(S.key)}`);
+  if (j.status === 'error') throw new Error(j.message || 'Twelve Data エラー');
+  const t = Date.now();
+  if (S.pairs.length === 1) addSample(S.pairs[0], t, parseFloat(j.price));
+  else for (const pair of S.pairs) if (j[pair] && j[pair].price) addSample(pair, t, parseFloat(j[pair].price));
+}
+async function historyTwelve() {
+  // 起動時に直近の1分足を読み込み、すぐに判定できるようにする
+  for (const pair of S.pairs) {
+    const s = ser(pair);
+    if (s.n >= MIN_SAMPLES && Date.now() - s.pts[s.pts.length - 1].t < 10 * 60e3) continue;
+    const j = await fetchJSON(`https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(pair)}&interval=1min&outputsize=180&timezone=UTC&apikey=${encodeURIComponent(S.key)}`);
+    if (j.status === 'error') throw new Error(j.message || 'Twelve Data エラー');
+    series[pair] = { pts: [], v: null, n: 0 };
+    const vals = (j.values || []).slice().reverse();
+    for (const v of vals) addSample(pair, Date.parse(v.datetime.replace(' ', 'T') + 'Z'), parseFloat(v.close));
+  }
+}
+
+// デモ：普段は小さく動き、ときどき急変を起こす模擬データ（仮想時間で10秒ずつ進む）
+function pollDemo() {
+  simClock += 10e3;
+  for (const pair of S.pairs) {
+    const def = PAIRS[pair];
+    const st = simState[pair] || (simState[pair] = { p: def.pip === 0.01 ? 150 + Math.random() * 20 : 1.1 + Math.random() * 0.2, drift: 0, jump: 0 });
+    const vol = st.p * 0.00004;
+    if (st.jump > 0) { st.p += st.drift; st.jump--; }
+    else if (Math.random() < 0.006) { st.drift = (Math.random() < 0.5 ? -1 : 1) * vol * (3 + Math.random() * 3); st.jump = 4 + Math.floor(Math.random() * 6); }
+    else if (st.drift && Math.random() < 0.3) st.drift *= Math.random() < 0.5 ? -0.4 : 0.3;
+    st.p += vol * gauss() + (st.jump === 0 ? st.drift * 0.2 : 0);
+    addSample(pair, simClock, +st.p.toFixed(def.dp));
+  }
+}
+function gauss() { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+
+async function tick() {
+  try {
+    if (S.source === 'coinbase') await pollCoinbase();
+    else if (S.source === 'twelvedata') await pollTwelve();
+    else pollDemo();
+    lastOk = now(); errMsg = '';
+  } catch (e) {
+    errMsg = '取得に失敗しました：' + (e.message || e);
+  }
+  for (const pair of S.pairs) {
+    const a = analyze(pair);
+    live[pair] = a;
+    checkEvents(pair, a);
+  }
+  saveSeries();
+  render();
+}
+
+async function start() {
+  if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch {} }
+  else if (audioCtx.state === 'suspended') audioCtx.resume();
+  stop();
+  running = true;
+  document.getElementById('btnStart').textContent = '監視を停止';
+  loadSeries();
+  if (S.source === 'demo') {
+    simClock = Date.now(); simState = {};
+    for (let i = 0; i < 60; i++) pollDemo();   // 判定に必要な準備期間を先に作る
+  }
+  if (S.source === 'twelvedata' && S.key) {
+    setStatus('履歴を読み込み中…');
+    try { await historyTwelve(); } catch (e) { errMsg = '履歴の取得に失敗：' + e.message; }
+  }
+  await tick();
+  const ms = S.source === 'demo' ? 400 : Math.max(5, S.poll) * 1000;
+  timer = setInterval(tick, ms);
+}
+function stop() {
+  running = false; clearInterval(timer); timer = null;
+  document.getElementById('btnStart').textContent = '監視を開始';
+}
+
+// ---------- 表示 ----------
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmtTime = t => new Date(t).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+const fmtDT = t => { const d = new Date(t); return `${d.getMonth() + 1}/${d.getDate()} ${fmtTime(t).slice(0, 5)}`; };
+
+function setStatus(msg, err) { const el = document.getElementById('status'); el.textContent = msg; el.className = 'status' + (err ? ' err' : ''); }
+
+function render() {
+  if (!running) { setStatus('停止中'); }
+  else if (errMsg) setStatus(errMsg, true);
+  else {
+    const src = { coinbase: 'Coinbase', twelvedata: 'Twelve Data', demo: 'デモ（模擬データ）' }[S.source];
+    const d = new Date().getDay();
+    const closed = S.source !== 'demo' && (d === 0 || d === 6) ? ' ・週末は市場が休みのため、値はほとんど動きません' : '';
+    setStatus(`監視中：${src} ・最終更新 ${lastOk ? fmtTime(lastOk) : '—'}${closed}`);
+  }
+  const box = document.getElementById('cards');
+  for (const pair of S.pairs) {
+    let card = document.getElementById('c_' + pair.replace('/', ''));
+    if (!card) {
+      card = document.createElement('div');
+      card.className = 'card'; card.id = 'c_' + pair.replace('/', '');
+      card.innerHTML = `<div class="row"><span class="pair">${pair}</span><span class="badge">準備中</span></div>
+        <div class="row"><span class="price">—</span><span class="chg"></span></div>
+        <canvas></canvas><div class="meter"><i></i></div><div class="small mtxt"></div><div class="predbox"></div>`;
+      box.appendChild(card);
+    }
+    const a = live[pair], def = PAIRS[pair];
+    const badge = card.querySelector('.badge');
+    card.classList.remove('lv1', 'lv2');
+    if (!a) { badge.textContent = '取得待ち'; continue; }
+    card.querySelector('.price').textContent = a.p.toFixed(def.dp);
+    const chg = card.querySelector('.chg');
+    if (!a.ready) {
+      badge.className = 'badge'; badge.textContent = '準備中';
+      chg.textContent = '';
+      card.querySelector('.mtxt').textContent = `判定の準備中です（あと${Math.max(1, a.need || 1)}回ほど値の変化が必要）`;
+      card.querySelector('.meter i').style.width = '0';
+      card.querySelector('.predbox').innerHTML = '';
+    } else {
+      badge.className = 'badge lv' + a.level;
+      badge.textContent = ['平常', '警戒', '急変'][a.level];
+      if (a.level) card.classList.add('lv' + a.level);
+      chg.className = 'chg ' + (a.pips > 0 ? 'up' : a.pips < 0 ? 'down' : '');
+      chg.textContent = `${S.window}分で ${a.pips > 0 ? '+' : ''}${a.pips.toFixed(1)} pips`;
+      const m = card.querySelector('.meter i');
+      const w = clamp(Math.abs(a.z) / (S.z * 1.5), 0, 1) * 50;
+      m.style.width = w + '%';
+      m.style.left = a.z >= 0 ? '50%' : (50 - w) + '%';
+      m.style.background = a.level === 2 ? 'var(--alert)' : a.level === 1 ? 'var(--warn)' : 'var(--accent)';
+      card.querySelector('.mtxt').textContent = `普段の値動きの ${Math.abs(a.z).toFixed(1)} 倍（${S.z}倍以上で急変）`;
+      card.querySelector('.predbox').innerHTML = a.pred ? predHTML(a.pred, def) : '';
+    }
+    drawChart(card.querySelector('canvas'), pair, a);
+  }
+  // 監視対象から外したペアのカードを消す
+  for (const c of [...box.children]) if (!S.pairs.some(p => 'c_' + p.replace('/', '') === c.id)) c.remove();
+}
+
+function predHTML(pr, def) {
+  const head = pr.dir === 0
+    ? `<span class="big">どちらとも言えない</span>（${Math.round(pr.prob * 100)}%）`
+    : `<span class="big ${pr.dir > 0 ? 'up' : 'down'}">${pr.dir > 0 ? '▲ 上' : '▼ 下'}方向に寄りやすい</span>（${Math.round(pr.prob * 100)}%）`;
+  const kind = pr.dir === 0 ? '' : pr.cont ? '・急変の流れが続く見立て' : '・急変の反動で戻る見立て';
+  return `<div class="pred">${S.horizon}分後の見立て：${head}<div class="small">${kind}　想定レンジ ${pr.lo.toFixed(def.dp)} 〜 ${pr.hi.toFixed(def.dp)}</div>
+    <ul>${pr.factors.map(f => `<li>${f.v > 0.05 ? '＋' : f.v < -0.05 ? '－' : '・'} ${esc(f.txt)}</li>`).join('')}</ul></div>`;
+}
+
+function drawChart(cv, pair, a) {
+  const s = series[pair]; if (!s || s.pts.length < 2) return;
+  const dpr = window.devicePixelRatio || 1;
+  const W = cv.clientWidth, H = cv.clientHeight;
+  if (cv.width !== W * dpr) { cv.width = W * dpr; cv.height = H * dpr; }
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+  const css = getComputedStyle(document.documentElement);
+  const col = n => css.getPropertyValue(n).trim();
+  const t1 = now(), t0 = t1 - Math.max(S.window * 12, 60) * 60e3;
+  const pts = s.pts.filter(p => p.t >= t0);
+  if (pts.length < 2) return;
+  let lo = Infinity, hi = -Infinity;
+  for (const p of pts) { lo = Math.min(lo, p.p); hi = Math.max(hi, p.p); }
+  const pad = (hi - lo) * 0.12 || PAIRS[pair].pip * 5; lo -= pad; hi += pad;
+  const X = t => (t - t0) / (t1 - t0) * W, Y = p => H - (p - lo) / (hi - lo) * H;
+  // 判定時間幅の網掛け
+  g.fillStyle = col('--chart-grid'); g.fillRect(X(t1 - S.window * 60e3), 0, W, H);
+  g.strokeStyle = a && a.level === 2 ? col('--alert') : col('--accent'); g.lineWidth = 1.6; g.beginPath();
+  pts.forEach((p, i) => { const x = X(p.t), y = Y(p.p); i ? g.lineTo(x, y) : g.moveTo(x, y); });
+  g.lineTo(W, Y(pts[pts.length - 1].p));
+  g.stroke();
+  // 急変の印
+  for (const e of events) {
+    if (e.pair !== pair || e.src !== S.source || e.t < t0) continue;
+    const x = X(e.t), y = Y(e.p);
+    g.fillStyle = e.spike > 0 ? col('--up') : col('--down');
+    g.beginPath();
+    if (e.spike > 0) { g.moveTo(x, y - 9); g.lineTo(x - 5, y - 2); g.lineTo(x + 5, y - 2); }
+    else { g.moveTo(x, y + 9); g.lineTo(x - 5, y + 2); g.lineTo(x + 5, y + 2); }
+    g.fill();
+  }
+  g.fillStyle = col('--muted'); g.font = '10px sans-serif';
+  g.fillText((hi - pad).toFixed(PAIRS[pair].dp), 2, 10);
+  g.fillText((lo + pad).toFixed(PAIRS[pair].dp), 2, H - 3);
+}
+
+function renderLog() {
+  const list = events.filter(e => e.src === S.source).slice(-50).reverse();
+  const tb = document.getElementById('log');
+  if (!list.length) tb.innerHTML = '<tr><td colspan="5" class="small">まだ急変はありません</td></tr>';
+  else tb.innerHTML = list.map(e => {
+    const def = PAIRS[e.pair] || { dp: 3 };
+    const res = e.result == null ? `<span class="small">${fmtTime(e.evalAt)}に判定</span>`
+      : e.result === 'hit' ? `<b class="up" style="color:var(--accent)">的中</b>`
+      : e.result === 'miss' ? `<b style="color:var(--alert)">外れ</b>` : '<span class="small">見送り</span>';
+    const after = e.after != null ? `<div class="small">${e.p.toFixed(def.dp)}→${e.after.toFixed(def.dp)}</div>` : '';
+    return `<tr><td>${fmtDT(e.t)}</td><td>${e.pair}</td>
+      <td class="${e.spike > 0 ? 'up' : 'down'}">${e.spike > 0 ? '急騰' : '急落'} ${e.pips > 0 ? '+' : ''}${e.pips.toFixed(0)}pips<div class="small">${Math.abs(e.z).toFixed(1)}倍</div></td>
+      <td>${predWord(e)}</td><td>${res}${after}</td></tr>`;
+  }).join('');
+  const done = list.filter(e => e.result === 'hit' || e.result === 'miss');
+  const hit = done.filter(e => e.result === 'hit').length;
+  document.getElementById('stats').innerHTML =
+    `<div>急変の回数 <b>${list.length}</b></div>
+     <div>答え合わせ済み <b>${done.length}</b></div>
+     <div>的中率 <b>${done.length ? Math.round(hit / done.length * 100) + '%' : '—'}</b>${done.length && done.length < 20 ? '<span class="small">（件数が少ないうちは参考程度）</span>' : ''}</div>`;
+}
+
+// ---------- 設定画面 ----------
+function fillSettings() {
+  const $ = id => document.getElementById(id);
+  $('s_source').value = S.source; $('s_key').value = S.key; $('s_poll').value = S.poll;
+  $('s_window').value = S.window; $('s_z').value = S.z; $('s_minpips').value = S.minPips;
+  $('s_abspips').value = S.absPips; $('s_horizon').value = S.horizon; $('s_cooldown').value = S.cooldown;
+  $('s_sound').value = S.sound;
+  $('s_pairs').innerHTML = Object.keys(PAIRS).map(p => `<label><input type="checkbox" value="${p}" ${S.pairs.includes(p) ? 'checked' : ''}> ${p}</label>`).join('');
+  updateSourceUI();
+}
+function readSettings() {
+  const $ = id => document.getElementById(id);
+  const num = (id, d) => { const v = parseFloat($(id).value); return isFinite(v) && v > 0 ? v : d; };
+  S = {
+    source: $('s_source').value, key: $('s_key').value.trim(), poll: num('s_poll', DEFAULTS.poll),
+    window: num('s_window', DEFAULTS.window), z: num('s_z', DEFAULTS.z), minPips: Math.max(0, parseFloat($('s_minpips').value) || 0),
+    absPips: num('s_abspips', DEFAULTS.absPips), horizon: num('s_horizon', DEFAULTS.horizon), cooldown: num('s_cooldown', DEFAULTS.cooldown),
+    sound: $('s_sound').value,
+    pairs: [...document.querySelectorAll('#s_pairs input:checked')].map(i => i.value),
+  };
+  if (!S.pairs.length) S.pairs = ['USD/JPY'];
+  if (S.source === 'twelvedata') S.poll = Math.max(S.poll, Math.ceil(110 * S.pairs.length));
+  store.set('settings', S);
+}
+function updateSourceUI() {
+  const src = document.getElementById('s_source').value;
+  document.getElementById('keyWrap').style.display = src === 'twelvedata' ? '' : 'none';
+  const n = document.querySelectorAll('#s_pairs input:checked').length || 1;
+  const note = {
+    coinbase: 'Coinbase の公開レートを使います。登録不要ですが、値の更新は数十秒〜1分おき程度です。',
+    twelvedata: `Twelve Data の無料枠は1日800回です。${n}ペアなら取得間隔は${Math.ceil(110 * n)}秒以上に自動調整します。起動時に直近3時間の1分足を読み込むので、すぐに判定を始められます。`,
+    demo: '模擬データで急変が起きる様子を早送りで確認できます。実際の相場ではありません。',
+  }[src];
+  document.getElementById('creditNote').textContent = note;
+}
+
+document.getElementById('s_source').addEventListener('change', updateSourceUI);
+document.getElementById('s_pairs').addEventListener('change', updateSourceUI);
+document.getElementById('btnStart').addEventListener('click', () => running ? (stop(), render()) : start());
+document.getElementById('btnSave').addEventListener('click', () => {
+  readSettings(); document.getElementById('cards').innerHTML = '';
+  for (const k in live) delete live[k];
+  renderLog(); start();
+});
+document.getElementById('btnReset').addEventListener('click', () => {
+  if (!confirm('急変の記録と保存している値動きの履歴を消去します。よろしいですか？')) return;
+  events = []; saveEvents(); series = {};
+  try { Object.keys(localStorage).filter(k => k.startsWith('fxm.series.')).forEach(k => localStorage.removeItem(k)); } catch {}
+  renderLog(); render();
+});
+document.getElementById('btnNotify').addEventListener('click', async () => {
+  if (!('Notification' in window)) { alert('このブラウザは通知に対応していません。画面上の表示と音でお知らせします。'); return; }
+  const r = await Notification.requestPermission();
+  updateNotifyBtn();
+  if (r === 'granted') new Notification('通知を受け取れるようになりました', { body: '急変を検知するとここに表示されます' });
+});
+document.getElementById('banner').addEventListener('click', e => e.currentTarget.classList.remove('show'));
+function updateNotifyBtn() {
+  const b = document.getElementById('btnNotify');
+  if (!('Notification' in window)) { b.textContent = '通知：非対応'; return; }
+  b.textContent = Notification.permission === 'granted' ? '通知：オン' : Notification.permission === 'denied' ? '通知：ブロック中' : '通知を許可';
+}
+window.addEventListener('resize', () => render());
+
+fillSettings(); updateNotifyBtn(); renderLog(); render();
+})();
+</script>
+</body>
+</html>
