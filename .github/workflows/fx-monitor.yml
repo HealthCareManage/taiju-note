@@ -1,0 +1,47 @@
+name: fx-monitor
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+# 前の実行がまだ動いている間は、次の実行を待たせる（同時に2つ動かさない）
+concurrency:
+  group: fx-monitor
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 前回までの記録を読み込む
+        run: |
+          if git fetch --depth=1 origin fx-state 2>/dev/null; then
+            git show FETCH_HEAD:state.json > state.json || echo '{}' > state.json
+          else
+            echo '{}' > state.json
+          fi
+
+      - name: 監視する
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: node monitor/monitor.mjs
+
+      - name: 記録を保存する
+        if: always()
+        run: |
+          [ -s state.json ] || exit 0
+          d=$(mktemp -d)
+          cp state.json "$d/state.json"
+          cd "$d"
+          git init -q
+          git checkout -q -b fx-state
+          git add state.json
+          git -c user.name=fx-monitor -c user.email=fx-monitor@users.noreply.github.com commit -qm "state"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" fx-state

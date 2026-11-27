@@ -1,0 +1,12 @@
+{
+  "pairs": ["USD/JPY", "EUR/JPY", "EUR/USD"],
+  "window": 5,
+  "z": 3,
+  "minPips": 15,
+  "absPips": 50,
+  "horizon": 15,
+  "cooldown": 10,
+  "runSeconds": 240,
+  "intervalSeconds": 15,
+  "notifyResults": true
+}
